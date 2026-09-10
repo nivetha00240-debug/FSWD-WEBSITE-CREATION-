@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MiniBlog - Micro Blogging App</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: #4f46e5;
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav ul a:hover {
+            color: #dcd9ff;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #e8e7ff, #ffffff);
+            padding: 70px 8%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 50px;
+            color: #4f46e5;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .hero button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* MAIN */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        /* CREATE POST */
+        .create-post {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .create-post h2 {
+            color: #4f46e5;
+            margin-bottom: 18px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        textarea:focus,
+        input:focus {
+            border-color: #4f46e5;
+        }
+
+        .post-button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .post-button:hover {
+            background: #3730a3;
+        }
+
+        .counter {
+            color: #777;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        /* BLOG POST */
+        .post {
+            background: white;
+            padding: 22px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .username {
+            color: #4f46e5;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .date {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .post-content {
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 15px;
+            word-wrap: break-word;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .like-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .like-btn:hover {
+            background: #dc2626;
+        }
+
+        .delete-btn {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #333;
+        }
+
+        /* SEARCH */
+        .search-box {
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            border-radius: 25px;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 30px;
+        }
+
+        /* ABOUT */
+        .about {
+            background: white;
+            padding: 40px 8%;
+            text-align: center;
+        }
+
+        .about h2 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+        }
+
+        .about p {
+            max-width: 700px;
+            margin: auto;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        footer span {
+            color: #818cf8;
+        }
+
+        /* MOBILE */
+        @media (max-width: 600px) {
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .post-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav>
+
+        <div class="logo">
+            📝 MiniBlog
+        </div>
+
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero" id="home">
+
+        <h1>Welcome to MiniBlog</h1>
+
+        <p>
+            Share your thoughts. Connect with people.
+            Express yourself.
+        </p>
+
+        <button onclick="goToCreatePost()">
+            ✍️ Write a Post
+        </button>
+
+    </section>
+
+
+    <!-- MAIN BLOG -->
+
+    <div class="container" id="blog">
+
+        <!-- CREATE POST -->
+
+        <div class="create-post" id="createPost">
+
+            <h2>✍️ Create a New Post</h2>
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter your name"
+                maxlength="30"
+            >
+
+            <textarea
+                id="postContent"
+                placeholder="What's on your mind?"
+                maxlength="280"
+            ></textarea>
+
+            <p class="counter">
+                <span id="charCount">0</span> / 280 characters
+            </p>
+
+            <br>
+
+            <button
+                class="post-button"
+                onclick="createPost()">
+                Publish Post
+            </button>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="search"
+                placeholder="🔍 Search posts..."
+                onkeyup="searchPosts()"
+            >
+
+        </div>
+
+
+        <!-- POSTS -->
+
+        <div id="postsContainer">
+
+            <div class="empty" id="emptyMessage">
+                No posts yet. Be the first to post!
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ABOUT -->
+
+    <section class="about" id="about">
+
+        <h2>About MiniBlog</h2>
+
+        <p>
+            MiniBlog is a simple micro-blogging application
+            where users can write short posts, share their
+            thoughts, like posts and delete posts. It is
+            developed using HTML, CSS and JavaScript.
+        </p>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 <span>MiniBlog</span>
+            | Micro Blogging Application
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        /* =========================
+           VARIABLES
+        ========================= */
+
+        const usernameInput =
+            document.getElementById("username");
+
+        const contentInput =
+            document.getElementById("postContent");
+
+        const charCount =
+            document.getElementById("charCount");
+
+        const postsContainer =
+            document.getElementById("postsContainer");
+
+        const emptyMessage =
+            document.getElementById("emptyMessage");
+
+
+        /* =========================
+           CHARACTER COUNTER
+        ========================= */
+
+        contentInput.addEventListener("input", function() {
+
+            charCount.textContent =
+                contentInput.value.length;
+
+        });
+
+
+        /* =========================
+           CREATE POST
+        ========================= */
+
+        function createPost() {
+
+            const username =
+                usernameInput.value.trim();
+
+            const content =
+                contentInput.value.trim();
+
+
+            if (username === "") {
+
+                alert("Please enter your name.");
+
+                return;
+
+            }
+
+
+            if (content === "") {
+
+                alert("Please write something.");
+
+                return;
+
+            }
+
+
+            const post = {
+
+                id: Date.now(),
+
+                username: username,
+
+                content: content,
+
+                likes: 0,
+
+                date: new Date().toLocaleString()
+
+            };
+
+
+            displayPost(post);
+
+
+            usernameInput.value = "";
+
+            contentInput.value = "";
+
+            charCount.textContent = "0";
+
+
+            alert("Post published successfully! 🎉");
+
+        }
+
+
+        /* =========================
+           DISPLAY POST
+        ========================= */
+
+        function displayPost(post) {
+
+            emptyMessage.style.display = "none";
+
+
+            const postElement =
+                document.createElement("div");
+
+            postElement.className = "post";
+
+
+            postElement.setAttribute(
+                "data-content",
+                post.content.toLowerCase()
+            );
+
+
+            postElement.innerHTML = `
+
+                <div class="post-header">
+
+                    <div class="username">
+                        👤 ${escapeHTML(post.username)}
+                    </div>
+
+                    <div class="date">
+                        ${post.date}
+                    </div>
+
+                </div>
+
+
+                <div class="post-content">
+                    ${escapeHTML(post.content)}
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="like-btn"
+                        onclick="likePost(this)">
+
+                        ❤️ Like
+                        <span>0</span>
+
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        onclick="deletePost(this)">
+
+                        🗑️ Delete
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            postsContainer.prepend(postElement);
+
+        }
+
+
+        /* =========================
+           LIKE POST
+        ========================= */
+
+        function likePost(button) {
+
+            const likeCount =
+                button.querySelector("span");
+
+            let count =
+                parseInt(likeCount.textContent);
+
+            count++;
+
+            likeCount.textContent = count;
+
+        }
+
+
+        /* =========================
+           DELETE POST
+        ========================= */
+
+        function deletePost(button) {
+
+            const post =
+                button.closest(".post");
+
+            post.remove();
+
+
+            const remainingPosts =
+                document.querySelectorAll(".post");
+
+
+            if (remainingPosts.length === 0) {
+
+                emptyMessage.style.display = "block";
+
+            }
+
+        }
+
+
+        /* =========================
+           SEARCH POSTS
+        ========================= */
+
+        function searchPosts() {
+
+            const searchText =
+                document
+                .getElementById("search")
+                .value
+                .toLowerCase();
+
+
+            const posts =
+                document.querySelectorAll(".post");
+
+
+            posts.forEach(function(post) {
+
+                const content =
+                    post
+                    .getAttribute("data-content");
+
+
+                const username =
+                    post
+                    .querySelector(".username")
+                    .textContent
+                    .toLowerCase();
+
+
+                if (
+                    content.includes(searchText) ||
+                    username.includes(searchText)
+                ) {
+
+                    post.style.display = "block";
+
+                } else {
+
+                    post.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+
+        /* =========================
+           SCROLL TO CREATE POST
+        ========================= */
+
+        function goToCreatePost() {
+
+            document
+            .getElementById("createPost")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* =========================
+           SECURITY
+        ========================= */
+
+        function escapeHTML(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent = text;
+
+            return div.innerHTML;
+
+        }
+
+    </script>
+
+</body>
+</html>
