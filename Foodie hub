@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Foodie Hub - Online Food Ordering</title>
+
+    <style>
+        /* =========================
+           BASIC RESET
+        ========================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff8f2;
+            color: #333;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+        nav {
+            background: #ff5722;
+            color: white;
+            padding: 15px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #ffe0b2;
+        }
+
+        .cart-button {
+            border: none;
+            background: white;
+            color: #ff5722;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* =========================
+           HERO SECTION
+        ========================= */
+        .hero {
+            min-height: 500px;
+            padding: 70px 8%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            background: linear-gradient(135deg, #fff0e6, #ffffff);
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-text h1 {
+            color: #ff5722;
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .hero-text h2 {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .hero-text p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .order-now {
+            border: none;
+            background: #ff5722;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 30px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .order-now:hover {
+            background: #e64a19;
+        }
+
+        .hero-food {
+            font-size: 180px;
+        }
+
+        /* =========================
+           GENERAL SECTIONS
+        ========================= */
+        section {
+            padding: 65px 7%;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #ff5722;
+            font-size: 36px;
+            margin-bottom: 35px;
+        }
+
+        /* =========================
+           SEARCH
+        ========================= */
+        .search-box {
+            max-width: 650px;
+            margin: 0 auto 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #ff5722;
+        }
+
+        /* =========================
+           CATEGORIES
+        ========================= */
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .category {
+            border: none;
+            background: #ffe0d2;
+            color: #ff5722;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .category:hover,
+        .category.active {
+            background: #ff5722;
+            color: white;
+        }
+
+        /* =========================
+           FOOD CARDS
+        ========================= */
+        .food-container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-7px);
+        }
+
+        .food-image {
+            height: 180px;
+            background: #fff0e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 90px;
+        }
+
+        .food-content {
+            padding: 20px;
+        }
+
+        .food-content h3 {
+            color: #ff5722;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .food-content p {
+            color: #777;
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .add-cart {
+            width: 100%;
+            border: none;
+            background: #ff5722;
+            color: white;
+            padding: 11px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .add-cart:hover {
+            background: #e64a19;
+        }
+
+        /* =========================
+           CART
+        ========================= */
+        #cart {
+            background: white;
+        }
+
+        .cart-container {
+            max-width: 850px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item h3 {
+            color: #333;
+        }
+
+        .cart-item p {
+            color: #777;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #ff5722;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .quantity span {
+            padding: 0 12px;
+            font-weight: bold;
+        }
+
+        .remove {
+            border: none;
+            background: #555;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .remove:hover {
+            background: #333;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-size: 25px;
+            font-weight: bold;
+            color: #ff5722;
+            margin-top: 20px;
+        }
+
+        .checkout {
+            display: block;
+            margin: 20px 0 0 auto;
+            border: none;
+            background: #16a34a;
+            color: white;
+            padding: 13px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .checkout:hover {
+            background: #15803d;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+        /* =========================
+           ABOUT
+        ========================= */
+        .about-container {
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .about-container p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* =========================
+           CONTACT
+        ========================= */
+        .contact-container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .contact-container input,
+        .contact-container textarea {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .contact-container textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .contact-btn {
+            background: #ff5722;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        footer span {
+            color: #ff5722;
+        }
+
+        /* =========================
+           RESPONSIVE DESIGN
+        ========================= */
+        @media (max-width: 850px) {
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 45px;
+            }
+
+            .hero-food {
+                font-size: 110px;
+            }
+
+            .food-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .food-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-total {
+                text-align: center;
+            }
+
+            .checkout {
+                margin: 20px auto 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav>
+
+        <div class="logo">
+            🍴 Foodie Hub
+        </div>
+
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#cart">Cart</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <button class="cart-button" onclick="goToCart()">
+            🛒 Cart (<span id="cartCount">0</span>)
+        </button>
+
+    </nav>
+
+
+    <!-- =========================
+         HOME
+    ========================= -->
+
+    <section class="hero" id="home">
+
+        <div class="hero-text">
+
+            <h1>Foodie Hub</h1>
+
+            <h2>Delicious Food at Your Doorstep!</h2>
+
+            <p>
+                Welcome to Foodie Hub, your simple online food
+                ordering application. Discover your favourite
+                dishes, add them to your cart and place your
+                order easily.
+            </p>
+
+            <button class="order-now" onclick="goToMenu()">
+                Order Now 🍕
+            </button>
+
+        </div>
+
+        <div class="hero-food">
+            🍔
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MENU
+    ========================= -->
+
+    <section id="menu">
+
+        <h2 class="section-title">
+            🍽️ Our Menu
+        </h2>
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="search"
+                placeholder="🔍 Search food..."
+                onkeyup="searchFood()"
+            >
+
+        </div>
+
+
+        <!-- CATEGORIES -->
+
+        <div class="categories">
+
+            <button
+                class="category active"
+                onclick="filterFood('all', this)">
+                All
+            </button>
+
+            <button
+                class="category"
+                onclick="filterFood('pizza', this)">
+                🍕 Pizza
+            </button>
+
+            <button
+                class="category"
+                onclick="filterFood('burger', this)">
+                🍔 Burger
+            </button>
+
+            <button
+                class="category"
+                onclick="filterFood('biryani', this)">
+                🍚 Biryani
+            </button>
+
+            <button
+                class="category"
+                onclick="filterFood('dessert', this)">
+                🍰 Dessert
+            </button>
+
+            <button
+                class="category"
+                onclick="filterFood('drink', this)">
+                🥤 Drinks
+            </button>
+
+        </div>
+
+
+        <!-- FOOD ITEMS -->
+
+        <div class="food-container">
+
+            <!-- FOOD 1 -->
+
+            <div class="food-card" data-category="pizza">
+
+                <div class="food-image">
+                    🍕
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Cheese Pizza</h3>
+
+                    <p>
+                        Delicious pizza loaded with cheese.
+                    </p>
+
+                    <div class="price">
+                        ₹249
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Cheese Pizza',249)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 2 -->
+
+            <div class="food-card" data-category="pizza">
+
+                <div class="food-image">
+                    🍕
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Veg Pizza</h3>
+
+                    <p>
+                        Fresh vegetable pizza.
+                    </p>
+
+                    <div class="price">
+                        ₹199
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Veg Pizza',199)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 3 -->
+
+            <div class="food-card" data-category="burger">
+
+                <div class="food-image">
+                    🍔
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Chicken Burger</h3>
+
+                    <p>
+                        Juicy chicken burger with fresh vegetables.
+                    </p>
+
+                    <div class="price">
+                        ₹179
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Chicken Burger',179)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 4 -->
+
+            <div class="food-card" data-category="burger">
+
+                <div class="food-image">
+                    🍔
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Veg Burger</h3>
+
+                    <p>
+                        Crispy and tasty vegetable burger.
+                    </p>
+
+                    <div class="price">
+                        ₹149
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Veg Burger',149)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 5 -->
+
+            <div class="food-card" data-category="biryani">
+
+                <div class="food-image">
+                    🍚
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Chicken Biryani</h3>
+
+                    <p>
+                        Aromatic and spicy chicken biryani.
+                    </p>
+
+                    <div class="price">
+                        ₹220
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Chicken Biryani',220)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 6 -->
+
+            <div class="food-card" data-category="biryani">
+
+                <div class="food-image">
+                    🍛
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Veg Biryani</h3>
+
+                    <p>
+                        Delicious vegetable biryani.
+                    </p>
+
+                    <div class="price">
+                        ₹170
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Veg Biryani',170)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 7 -->
+
+            <div class="food-card" data-category="dessert">
+
+                <div class="food-image">
+                    🍰
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Chocolate Cake</h3>
+
+                    <p>
+                        Soft and delicious chocolate cake.
+                    </p>
+
+                    <div class="price">
+                        ₹129
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Chocolate Cake',129)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 8 -->
+
+            <div class="food-card" data-category="dessert">
+
+                <div class="food-image">
+                    🍨
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Ice Cream</h3>
+
+                    <p>
+                        Creamy and refreshing ice cream.
+                    </p>
+
+                    <div class="price">
+                        ₹99
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Ice Cream',99)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD 9 -->
+
+            <div class="food-card" data-category="drink">
+
+                <div class="food-image">
+                    🥤
+                </div>
+
+                <div class="food-content">
+
+                    <h3>Fresh Juice</h3>
+
+                    <p>
+                        Fresh and healthy fruit juice.
+                    </p>
+
+                    <div class="price">
+                        ₹89
+                    </div>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart('Fresh Juice',89)">
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CART
+    ========================= -->
+
+    <section id="cart">
+
+        <h2 class="section-title">
+            🛒 Your Cart
+        </h2>
+
+        <div class="cart-container">
+
+            <div id=
